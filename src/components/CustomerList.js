@@ -30,6 +30,24 @@ const CustomerList = () => {
     setEditingCustomer(customer);
   };
 
+  // Handle the Delete button click
+  const handleDeleteClick = async (customerId, customerName) => {
+    try {
+      // Send DELETE request to the RestDB API
+      await axios.delete(`https://demo1-4744.restdb.io/rest/customers/${customerId}`, {
+        headers: { 'x-apikey': API_KEY },
+      });
+
+      // Remove the deleted customer from the state
+      setCustomers(customers.filter((customer) => customer._id !== customerId));
+
+      // Show an alert confirming the deletion
+      alert(`Customer ${customerName} has been deleted.`);
+    } catch (error) {
+      console.error('Error deleting customer:', error);
+    }
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', gap: '10px' }}>
@@ -47,6 +65,7 @@ const CustomerList = () => {
               <li key={customer._id}>
                 {customer.customerName} - {customer.customerEmail}
                 <button onClick={() => handleEditClick(customer)}>Edit</button>
+                <button onClick={() => handleDeleteClick(customer._id, customer.customerName)}>Delete</button>
               </li>
             ))}
           </ul>
